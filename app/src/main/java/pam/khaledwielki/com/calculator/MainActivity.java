@@ -1,9 +1,11 @@
 package pam.khaledwielki.com.calculator;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 computeCalculation();
                 binding.infoTextView.setText(decimalFormat.format(valueOne));
-                //CURRENT_ACTION = 'Zero';
+                valueOne = Double.NaN;
                 binding.editText.setText(null);
             }
         });
@@ -177,6 +179,8 @@ public class MainActivity extends AppCompatActivity {
                 if((binding.editText.length() > 0) || binding.infoTextView.length() > 0) {
                     computeCalculation();
                     CURRENT_ACTION = clear;
+                    valueOne = Double.NaN;
+                    valueTwo = Double.NaN;
                     binding.infoTextView.setText(null);
                     binding.editText.setText(null);
                 }
@@ -204,14 +208,25 @@ public class MainActivity extends AppCompatActivity {
             } else if (CURRENT_ACTION == multiplication) {
                 valueOne = this.valueOne * valueTwo;
             } else if (CURRENT_ACTION == division) {
-                valueOne = this.valueOne / valueTwo;
+                if(!(valueTwo == 0)) {
+                    valueOne = this.valueOne / valueTwo;
+                }
+                else {
+                    Context context = getApplicationContext();
+                    CharSequence text = "Nie mozna dzielic przez 0";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                    valueTwo = Double.NaN;
+                }
             }
             else if (CURRENT_ACTION == changeSign) {
                 valueOne = -(this.valueOne);
             }
             else if (CURRENT_ACTION == clear) {
-                valueOne = 0;
-                valueTwo = 0;
+                valueOne = Double.NaN;
+                valueTwo = Double.NaN;
             }
         }
         else {
